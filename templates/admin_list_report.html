@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Reports Dashboard</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+/* ======= General Styles ======= */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f8f7;
+  color: #333;
+  margin: 0;
+}
+
+/* ======= Navbar ======= */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, #497D74, #3c6d63);
+  padding: 12px 40px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.logo img {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.logo span {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+}
+nav a {
+  color: #fff;
+  font-size: 18px;
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+nav a:hover {
+  background-color: #00C49a;
+}
+
+/* ======= Container & Cards ======= */
+.container {
+  background-color: #A3D1C6;
+  min-height: 100vh;
+  padding: 40px;
+}
+h2 {
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+.report-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 25px;
+}
+.report-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  padding: 20px;
+  transition: all 0.3s ease;
+  border: 1px solid #eee;
+}
+.report-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+}
+.report-card span {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.report-actions {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+.report-actions button, 
+.report-actions a {
+  flex: 1;
+}
+
+/* ======= Modal ======= */
+.modal-content {
+  background: #ffffffd9;
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.modal-body {
+  padding: 0;
+}
+#modalImage {
+  height: 100%;
+  object-fit: cover;
+}
+.modal-right {
+  background: #fff;
+  padding: 40px;
+}
+.modal-right h3 {
+  font-weight: 700;
+  color: #222;
+}
+.modal-right p {
+  color: #555;
+  line-height: 1.6;
+}
+.modal-footer {
+  border-top: none;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 20px 40px;
+}
+.print-btn {
+  background-color: #00C49a;
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+.print-btn:hover {
+  background-color: #009e7e;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printArea, #printArea * {
+    visibility: visible;
+  }
+  #printArea {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 40px;
+    background: white;
+  }
+  #printArea h1 {
+    text-align: center;
+    border-bottom: 2px solid #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+  }
+  #printArea img {
+    display: block;
+    margin: 0 auto 20px;
+    max-height: 300px;
+  }
+  #printArea p {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+}
+</style>
+</head>
+
+<body>
+<nav>
+  <div class="logo">
+    <img src="{{ url_for('static', filename='img/image.jfif') }}" alt="Logo">
+    <span>Employee Reports Dashboard</span>
+  </div>
+  <a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-sign-out-alt"></i> Return</a>
+</nav>
+
+<div class="container">
+  <h2>Reports Submitted</h2>
+  <div class="d-flex justify-content-end align-items-center mb-4" style="gap: 10px; flex-wrap: wrap;">
+    <input type="text" id="searchInput" class="form-control form-control-sm w-auto" placeholder="Search..." style="min-width: 200px;">
+    <select id="statusFilter" class="form-select form-select-sm w-auto">
+      <option value="">All</option>
+      <option value="approved">Approved</option>
+      <option value="rejected">Rejected</option>
+      <option value="review">Pending</option>
+    </select>
+  </div>
+
+  <ul class="report-list">
+    {% for reportt in report|reverse %}
+    <li class="report-card" 
+        data-name="{{ reportt[2]|lower }}" 
+        data-task="{{ reportt[3]|lower }}" 
+        data-status="{{ reportt[4] }}">
+
+      <div>
+        <span>Report: {{ reportt[3] }}</span>
+        <span>by {{ reportt[2] }}</span>
+        {% if reportt[4] == 'approved' %}
+          <span class="text-success">✅ Approved</span>
+        {% elif reportt[4] == 'rejected' %}
+          <span class="text-danger">❌ Rejected</span>
+        {% elif reportt[4] == 'review' %}
+          <span class="text-warning">⏳ Pending</span>
+        {% endif %}
+      </div>
+
+      <div class="report-actions">
+        <a href="#" class="btn btn-success open-modal"
+           data-bs-toggle="modal"
+           data-bs-target="#fbModal"
+           data-image-url="{{ url_for('view', report_id=reportt[0]) }}"
+           data-task="{{ reportt[3] }}"
+           data-message="{{ reportt[1] }}">
+           <i class="fas fa-eye"></i> View
+        </a>
+        <form action="{{ url_for('check', report_id=reportt[0]) }}" method="POST">
+          <button type="submit" class="btn btn-primary"
+                  {% if reportt[4] != 'review' %}disabled{% endif %}>
+            Approve
+          </button>
+        </form>
+        <form action="/reject_task/{{reportt[0]}}" method="POST">
+          <button type="submit" class="btn btn-danger"
+                  {% if reportt[4] != 'review' %}disabled{% endif %}>
+            Reject
+          </button>
+        </form>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="modal fade" id="fbModal" tabindex="-1" aria-labelledby="fbModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+      
+      <div class="row g-0">
+        
+        <div class="col-lg-6 col-12">
+          <img id="modalImage" src="" alt="Post Photo"
+               class="img-fluid w-100 h-100"
+               style="object-fit: cover; height: 100%;">
+        </div>
+
+        <div class="col-lg-6 col-12 d-flex flex-column justify-content-between bg-white p-5">
+          
+          <div>
+            <h3 class="fw-bold text-dark mb-3" id="modalTask">Task Title</h3>
+            <hr class="opacity-25">
+            <p class="text-secondary fs-5" id="modalMessage">
+              This is a detailed message area for the post or task description.
+            </p>
+          </div>
+          <div class="d-flex justify-content-end gap-3 mt-4">
+            <button class="btn btn-outline-secondary px-4 py-2 rounded-pill shadow-sm" data-bs-dismiss="modal">
+              <i class="fas fa-times"></i> Close
+            </button>
+            <button class="btn btn-success px-4 py-2 rounded-pill shadow-sm" id="printReport">
+              <i class="fas fa-print"></i> Print
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="printArea" style="display:none;">
+  <h1>Employee Report</h1>
+  <img id="printImage" src="">
+  <h2 id="printTask"></h2>
+  <p id="printMessage"></p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const searchInput = document.getElementById('searchInput');
+const statusFilter = document.getElementById('statusFilter');
+const reportItems = document.querySelectorAll('.report-card');
+
+function filterReports() {
+  const query = searchInput.value.toLowerCase();
+  const selectedStatus = statusFilter.value;
+  reportItems.forEach(item => {
+    const name = item.dataset.name;
+    const task = item.dataset.task;
+    const status = item.dataset.status;
+    const matchText = name.includes(query) || task.includes(query);
+    const matchStatus = !selectedStatus || status === selectedStatus;
+    item.style.display = matchText && matchStatus ? 'block' : 'none';
+  });
+}
+searchInput.addEventListener('input', filterReports);
+statusFilter.addEventListener('change', filterReports);
+
+document.addEventListener('DOMContentLoaded', () => {
+  const modalImage = document.getElementById('modalImage');
+  const modalTask = document.getElementById('modalTask');
+  const modalMessage = document.getElementById('modalMessage');
+  const printImage = document.getElementById('printImage');
+  const printTask = document.getElementById('printTask');
+  const printMessage = document.getElementById('printMessage');
+
+  document.querySelectorAll('.open-modal').forEach(button => {
+    button.addEventListener('click', () => {
+      const imageUrl = button.dataset.imageUrl || '';
+      const taskText = button.dataset.task || '';
+      const messageText = button.dataset.message || '';
+
+      modalImage.src = imageUrl;
+      modalTask.textContent = taskText;
+      modalMessage.textContent = messageText;
+
+      printImage.src = imageUrl;
+      printTask.textContent = taskText;
+      printMessage.textContent = messageText;
+    });
+  });
+});
+
+function printReport() {
+  document.getElementById('printArea').style.display = 'block';
+  window.print();
+  document.getElementById('printArea').style.display = 'none';
+}
+
+</script>
+<script>
+document.getElementById('printReport').addEventListener('click', function () {
+  const imageSrc = document.getElementById('modalImage').src;
+  const taskTitle = document.getElementById('modalTask').textContent;
+  const taskMessage = document.getElementById('modalMessage').textContent;
+  const currentDate = new Date().toLocaleString();
+
+  const printContents = `
+    <div class="print-container">
+      <header class="print-header">
+        <img src="{{ url_for('static', filename='img/image.jfif') }}" alt="Logo" class="print-logo">
+        <div class="print-header-text">
+          <h2>Employee Report Summary</h2>
+          <p>Generated from Employee Dashboard</p>
+        </div>
+      </header>
+
+      <hr class="divider">
+
+      <main class="print-body">
+        <h3 class="task-title">Task : ${taskTitle}</h3>
+        <p class="task-message">Message : ${taskMessage}</p>
+        
+        <div class="image-section">
+          <img src="${imageSrc}" alt="Task Image" class="task-image">
+          <p class="caption">Attached Evidence / Task Photo</p>
+        </div>
+      </main>
+
+      <footer class="print-footer">
+        <p>Printed on: <strong>${currentDate}</strong></p>
+        <p>© ${new Date().getFullYear()} Employee Reports System. All Rights Reserved.</p>
+      </footer>
+    </div>
+  `;
+
+  const printWindow = window.open('', '_blank', 'width=900,height=1000');
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Report</title>
+        <style>
+          body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #fafafa;
+            color: #333;
+            margin: 0;
+            padding: 40px;
+          }
+          .print-container {
+            background: #fff;
+            padding: 40px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+          }
+          .print-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            text-align: center;
+            margin-bottom: 10px;
+          }
+          .print-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+          }
+          .print-header-text h2 {
+            margin: 0;
+            font-size: 22px;
+            color: #497D74;
+            font-weight: 700;
+          }
+          .print-header-text p {
+            margin: 0;
+            font-size: 14px;
+            color: #777;
+          }
+          .divider {
+            border: none;
+            border-top: 2px solid #497D74;
+            margin: 20px 0;
+            opacity: 0.5;
+          }
+          .print-body {
+            text-align: center;
+          }
+          .task-title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 10px;
+          }
+          .task-message {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 30px;
+          }
+          .image-section {
+            text-align: center;
+            margin-bottom: 40px;
+          }
+          .task-image {
+            width: 80%;
+            border-radius: 10px;
+            border: 2px solid #ccc;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+          }
+          .caption {
+            font-size: 13px;
+            color: #777;
+            margin-top: 8px;
+          }
+          .print-footer {
+            text-align: center;
+            font-size: 13px;
+            color: #888;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+          }
+          @media print {
+            body {
+              background: #fff;
+              -webkit-print-color-adjust: exact;
+            }
+          }
+        </style>
+      </head>
+      <body onload="window.print(); window.onafterprint = () => window.close();">
+        ${printContents}
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+});
+</script>
+
+</body>
+</html>

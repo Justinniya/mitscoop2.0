@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+/* Reset & base styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #eef2f7;
+    color: #333;
+}
+
+/* Navbar */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background: linear-gradient(90deg, #4caf91, #39796b);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    border-radius: 0 0 20px 20px;
+    flex-wrap: wrap;
+}
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.logo img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+}
+.logo span {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+nav ul {
+    display: flex;
+    gap: 25px;
+    list-style: none;
+    flex-wrap: wrap;
+}
+nav a {
+    color: #fff;
+    font-size: 16px;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+nav a:hover {
+    background-color: #00C49a;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Container */
+.container1 {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.container1:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+}
+h2 {
+    font-size: 28px;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Profile Info */
+.profile-info {
+    display: grid;
+    gap: 25px;
+}
+.profile-details p {
+    font-size: 18px;
+    color: #2c3e50;
+    margin-bottom: 12px;
+}
+.profile-details strong {
+    color: #1abc9c;
+}
+
+/* Buttons */
+.settings_button,
+.logout_button {
+    background: #1abc9c;
+    color: #fff;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+    box-shadow: 0 6px 12px rgba(26, 188, 156, 0.3);
+    transition: all 0.3s ease;
+}
+.settings_button:hover,
+.logout_button:hover {
+    background: #16a085;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(22, 160, 133, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    nav {
+        padding: 10px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    nav ul {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+    nav a {
+        display: block;
+        width: 100%;
+        text-align: left;
+    }
+    .container1 {
+        margin: 20px 10px;
+        padding: 25px;
+    }
+    .settings_button,
+    .logout_button {
+        width: 100%;
+    }
+}
+</style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">
+        <img src="{{ url_for('static', filename='img/image.jfif') }}" alt="Logo">
+        <span>Employee Dashboard</span>
+    </div>
+    <ul>
+        <li><a href="{{ url_for('home') }}"><i class="fas fa-users"></i> Return</a></li>
+        <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+</nav>
+
+<div class="container1">
+    <h2>Welcome, {{ name }}!</h2>
+    <div class="profile-info">
+        <div class="profile-details">
+            <p><strong>Name:</strong> {{ name }}</p>
+            <p><strong>Age:</strong> {{ age }}</p>
+            <p><strong>Address:</strong> {{ address }}</p>
+            <p><strong>Gender:</strong> {{ gender }}</p>
+            <p><strong>Account Status:</strong> {{ status }}</p>
+            <p><strong>Contact Number:</strong> {{ contact }}</p>
+            <p><strong>Work Position:</strong> {{ position }}</p>
+            <p><strong>Email:</strong> {{ email }}</p>
+            
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

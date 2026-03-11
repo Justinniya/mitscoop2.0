@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Reports Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            color: #333;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #497D74;
+            padding: 10px 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .logo span {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px;
+        }
+        nav ul li {
+            text-align: center;
+        }
+        nav a {
+            color: #fff;
+            font-size: 16px;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+        nav a:hover {
+            background-color: #00C49a;
+            color: #fff;
+        }
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+        }
+        .container1 {
+            margin-top: 0;
+            padding: 40px;
+            background-color: #A3D1C6;
+            overflow-y: auto;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .dashboard-card {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .dashboard-card h3 {
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        form input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        form button, form a {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        form button {
+            background-color: #007bff;
+            color: white;
+        }
+        form button:hover {
+            background-color: #0056b3;
+        }
+        form a {
+            background-color: #28a745;
+            color: white;
+        }
+        form a:hover {
+            background-color: #1e7e34;
+        }
+        .table-container {
+            max-height: 350px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+        thead {
+            background-color: #497D74;
+            color: white;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                width: 100%;
+                background: #497D74;
+                display: none;
+                padding: 10px 0;
+            }
+            nav ul.active {
+                display: flex;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .logo img {
+                width: 40px;
+                height: 40px;
+            }
+            .logo span {
+                font-size: 18px;
+            }
+            .container1 {
+                padding: 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            nav {
+                padding: 10px;
+            }
+            .logo span {
+                font-size: 16px;
+            }
+            nav a {
+                font-size: 14px;
+                padding: 6px 10px;
+            }
+        }
+    </style>
+<nav>
+    <div class="logo">
+        <img src="{{ url_for('static', filename='img/image.jfif') }}" alt="Logo">
+        <span>Admin Dashboard</span>
+    </div>
+    <i class="fas fa-bars menu-toggle"></i>
+    <ul>
+        <li><a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-sign-out-alt"></i> Return</a></li>
+    </ul>
+</nav>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="mb-4 text-center">📊 All Reports Dashboard</h1>
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header fw-bold text-primary">Attendance Summary</div>
+                    <div class="card-body">
+                        <canvas id="attendanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header fw-bold text-success">Task Summary</div>
+                    <div class="card-body">
+                        <canvas id="taskChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header fw-bold text-danger">Report Summary</div>
+                    <div class="card-body">
+                        <canvas id="reportChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card shadow mt-5">
+            <div class="card-header fw-bold">
+                👤 User Compliance Status
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>User</th>
+                            <th>Attendance</th>
+                            <th>Tasks</th>
+                            <th>Reports</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in final_users %}
+                        <tr>
+                            <td>{{ user.name }}</td>
+                            <td>{{ user.attendance }}%</td>
+                            <td>{{ user.tasks }}%</td>
+                            <td>{{ user.reports }}%</td>
+                            {% if user.status.lower() == 'active' %}
+                            
+                            <td>
+                                <form action="{{ url_for('warn_user', user_id=user.id) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-warning">⚠️ Warning</button>
+                                </form>
+                                <form action="{{ url_for('suspend_user', user_id=user.id) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger">⛔ Suspend</button>
+                                </form>
+                                <form action="{{ url_for('appreciate_user', user_id=user.id) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-success">✅ Appreciate</button>
+                                </form>
+                            </td>
+                            {% elif user.status == 'Appreciation' %}
+                                <td>✅ Appreciated</td>
+                            {% elif user.status == 'Warning' %}
+                                <td>⚠️ Warning</td>
+                            {% elif user.status == 'Suspended' %}
+                                <td>⛔ Suspend</td>
+                            {% else %}
+                                <td>{{ user.status }}</td>
+                            {%endif%}
+                            {% if user.account_status == 'active' %}
+                                <td>
+                                    <form action="{{ url_for('status_user', user_id=user.id , action='warning') }}" method="POST"  style="display:inline;">
+                                        <button class="btn btn-sm btn-warning">⚠️ Warning</button>
+                                    </form>
+                                    <form action="{{ url_for('status_user', user_id=user.id,action='suspend') }}" method="POST"  style="display:inline;">
+                                        <button class="btn btn-sm btn-danger">⛔ Suspend</button>
+                                    </form>
+                                </td>
+                            {% elif user.account_status == 'Suspended' %}
+                                <td> <button class="btn btn-sm btn-warning">Account Suspend</button></td>
+                            {% elif user.account_status == 'Warning' %}
+                                <td><button class="btn btn-sm btn-danger">Account Warning</button></td>
+                                
+                            {%endif%}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div> 
+
+ <script>
+        // Attendance Chart
+        new Chart(document.getElementById('attendanceChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: {{ att_labels | tojson }},
+                datasets: [
+                    { label: 'Present', data: {{ att_present | tojson }}, backgroundColor: 'rgba(54, 162, 235, 0.7)' },
+                    { label: 'Absent', data: {{ att_absent | tojson }}, backgroundColor: 'rgba(255, 99, 132, 0.7)' }
+                ]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'top' } } }
+        });
+
+        // Task Chart
+        new Chart(document.getElementById('taskChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: {{ task_labels | tojson }},
+                datasets: [
+                    { label: 'Pending', data: {{ task_pending | tojson }}, backgroundColor: 'rgba(255, 206, 86, 0.7)' },
+                    { label: 'Completed', data: {{ task_completed | tojson }}, backgroundColor: 'rgba(75, 192, 192, 0.7)' }
+                ]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'top' } } }
+        });
+
+        // Report Chart
+        new Chart(document.getElementById('reportChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: {{ report_labels | tojson }},
+                datasets: [
+                    { label: 'Approved', data: {{ report_approved | tojson }}, backgroundColor: 'rgba(54, 235, 162, 0.7)' },
+                    { label: 'Rejected', data: {{ report_rejected | tojson }}, backgroundColor: 'rgba(255, 99, 132, 0.7)' },
+                    { label: 'Review', data: {{ report_review | tojson }}, backgroundColor: 'rgba(153, 102, 255, 0.7)' }
+                ]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'top' } } }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+

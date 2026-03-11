@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>View Task</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #497D74;
+    padding: 10px 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.logo img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.logo span {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+}
+nav a {
+    color: #fff;
+    font-size: 18px;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+nav a:hover {
+    background-color: #00C49a;
+}
+.container {
+    background-color: #A3D1C6;
+    padding: 20px;
+}
+.task-container {
+    margin: 30px auto;
+    padding: 30px;
+    max-width: 900px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 2px solid black;
+    background-color: #f9f9f9;
+}
+.task-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 2px solid black;
+    transition: transform 0.2s ease-in-out;
+    margin-bottom: 15px;
+}
+.task-card h2 {
+    font-size: 22px;
+    color: #2C3E50;
+    margin-bottom: 8px;
+}
+.task-card p {
+    font-size: 16px;
+    margin: 4px 0;
+}
+.task-card:hover {
+    transform: translateY(-5px);
+}
+.container1 {
+    margin: 30px auto;
+    padding: 30px;
+    background-color: #ddd;
+    max-width: 900px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 2px solid black;
+}
+h2 {
+    font-size: 24px;
+    color: #2C3E50;
+    margin-bottom: 20px;
+}
+textarea, input[type="file"] {
+    width: 95%;
+    padding: 14px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    border: 2px solid black;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+textarea:focus, input[type="file"]:focus {
+    border-color: #00C49a;
+    outline: none;
+}
+textarea::placeholder {
+    color: #aaa;
+}
+button {
+    background-color: #00C49a;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+button:hover {
+    background-color: #1abc9c;
+}
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+    }
+    .logo img {
+        width: 55px;
+        height: 55px;
+    }
+    .logo span {
+        display: none;
+    }
+    nav ul {
+        flex-direction: column;
+        width: 100%;
+        gap: 15px;
+    }
+    nav ul li {
+        width: 100%;
+    }
+    .task-container, .container1 {
+        padding: 20px;
+    }
+}
+</style>
+</head>
+<body>
+<nav>
+    <div class="logo">
+        <img src="{{ url_for('static', filename='img/image.jfif') }}" alt="Logo">
+        <span>Employee Dashboard</span>
+    </div>
+    <ul>
+        <li><a href="{{ url_for('report') }}"><i class="fas fa-sign-out-alt"></i> Return</a></li>
+    </ul>
+</nav>
+<div class="container">
+    <div class="task-container">
+        {% if tasks %}
+        <div class="task-card">
+            <h2>Task: {{ tasks[2] }}</h2>
+            <p><strong>Due:</strong> {{ tasks[3] }} </p><p style="text-align: end;">
+            <button id="viewPhotoBtn" 
+                style="background-color:#00C49a; color:white; border:none; padding:10px 20px;
+                border-radius:8px; cursor:pointer; font-size:16px;">
+                View Photo
+            </button>
+        </p>
+        </div>
+        {% endif %}
+    </div>
+    <div class="container1">
+        <form action="/view_report/{{ tasks[0] }}" method="POST" enctype="multipart/form-data">
+            <input type="text" name="task_des" value="{{ tasks[2] }}" hidden>
+            <h2>Write a Report</h2>
+            <textarea name="message" placeholder="Enter your report here..." data-maxlength="255" rows="8" required></textarea>
+            <h2>Send a Report Through Image</h2>
+            <input name="image" type="file" accept="image/*"><br>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <div id="photoModal" style="
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background-color:rgba(0,0,0,0.8);
+    justify-content:center;
+    align-items:center;
+    z-index:1000;">
+    
+    <div style="
+        position:relative;
+        background-color:white;
+        padding:20px;
+        border-radius:12px;
+        max-width:90%;
+        max-height:90%;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        box-shadow:0 0 20px rgba(0,0,0,0.3);">
+
+        <span id="closeModal" style="
+            position:absolute;
+            top:10px;
+            right:15px;
+            font-size:30px;
+            font-weight:bold;
+            color:#333;
+            cursor:pointer;">&times;</span>
+
+        {% if tasks[5] %}
+            <img src="{{ url_for('view_photo', report_id=tasks[0]) }}" alt="Task Image"
+                style="
+                    max-width:100%;
+                    max-height:80vh;
+                    border-radius:10px;
+                    border:3px solid #497D74;
+                    object-fit:contain;">
+        {% else %}
+            <p>No image uploaded.</p>
+        {% endif %}
+    </div>
+</div>
+
+</div>
+<script>
+document.getElementById('viewPhotoBtn').addEventListener('click', function() {
+    document.getElementById('photoModal').style.display = 'flex';
+});
+
+document.getElementById('closeModal').addEventListener('click', function() {
+    document.getElementById('photoModal').style.display = 'none';
+});
+
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('photoModal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+});
+</script>
+
+</body>
+</html>

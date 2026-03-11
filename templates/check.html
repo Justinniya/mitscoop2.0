@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Reports</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f8ff;
+}
+.report_container {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 1000px;
+    margin: 10px auto;
+    overflow-x: auto;
+}
+h2 {
+    text-align: center;
+    color: #333;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    min-width: 600px;
+}
+th, td {
+    padding: 10px;
+    border: 2px solid #ddd;
+    text-align: center;
+    font-size: 18px;
+}
+th {
+    background-color: #007bff;
+    color: #fff;
+}
+td {
+    background-color: #f9f9f9;
+}
+.report_img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover; 
+    border-radius: 5px;
+}
+.action_btn {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 3px;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+}
+.view_btn {
+    background-color: #007bff;
+}
+.view_btn:hover {
+    background-color: #0056b3;
+}
+.edit_btn {
+    background-color: #28a745;
+}
+.edit_btn:hover {
+    background-color: #218838;
+}
+.delete_btn {
+    background-color: #dc3545;
+}
+.delete_btn:hover {
+    background-color: #c82333;
+}
+.return {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-top: 20px;
+}
+.return:hover {
+    background-color: #0056b3;
+}
+@media (max-width: 768px) {
+    th, td {
+        font-size: 14px;
+        padding: 6px;
+    }
+    .report_img {
+        width: 70px;
+        height: 70px;
+    }
+    .action_btn {
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+    .return {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+}
+@media (max-width: 480px) {
+    .report_container {
+        padding: 10px;
+    }
+    table {
+        min-width: unset;
+    }
+    .report_img {
+        width: 60px;
+        height: 60px;
+    }
+}
+</style>
+</head>
+<body>
+<div class="report_container">
+    <h2>Employee Reports</h2>
+    <table>
+        <tr>
+            <th>Report ID</th>
+            <th>Message</th>
+            <th>Image</th>
+            <th>Actions</th>
+        </tr>
+        {% for report in reports %}
+        <tr>
+            <td>{{ report[0] }}</td>
+            <td>{{ report[1] }}</td>
+            <td>
+                {% if report[2] %}
+                    <img src="data:image/jpeg;base64,{{ report[2] | b64encode }}" class="report_img" alt="Report Image">
+                {% else %}
+                    No Image
+                {% endif %}
+            </td>
+            <td>
+                <form action="{{ url_for('delete_report', report_id=report[0]) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="action_btn delete_btn">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table><br>
+    <a href="{{ url_for('admin') }}" class="return">
+        <i class="fas fa-sign-out-alt"></i> 
+        <span>Back</span>
+    </a>
+</div>
+</body>
+</html>

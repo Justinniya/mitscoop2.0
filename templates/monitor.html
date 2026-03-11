@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitor</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+.container1 {
+    max-width: 100%;
+    overflow-x: auto;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 400px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+th {
+    background-color: #497D74;
+    color: white;
+}
+select.week {
+    padding: 5px;
+    font-size: 14px;
+}
+@media (max-width: 600px) {
+    th, td {
+        padding: 8px;
+        font-size: 14px;
+    }
+    table {
+        font-size: 14px;
+    }
+}
+</style>
+</head>
+<body>
+<div class="container1">  
+    <table>
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Month</th>
+                <th>
+                    Week 
+                    <select class="week">
+                        <option>week1</option>
+                        <option>week2</option>
+                        <option>week3</option>
+                        <option>week4</option>
+                    </select>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>12</td>
+                <td>March</td>
+                <td>2025</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>April</td>
+                <td>2025</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td>May</td>
+                <td>2025</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

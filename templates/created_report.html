@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<title>Created Reports</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: skyblue;
+    margin: 0;
+    padding: 20px;
+}
+.container {
+    max-width: 1000px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+h1 {
+    text-align: center;
+    color: #333;
+}
+.table-container {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 500px;
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+th {
+    background-color: #f2f2f2;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+tr:hover {
+    background-color: #eaeaea;
+}
+.return {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-top: 20px;
+}
+.return:hover {
+    background-color: #0056b3;
+}
+@media (max-width: 768px) {
+    th, td {
+        font-size: 14px;
+        padding: 8px;
+    }
+    .return {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+}
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+    table {
+        min-width: unset;
+    }
+    th, td {
+        font-size: 12px;
+        padding: 6px;
+    }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Created Reports</h1>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Report</th>
+                    <th>Date Created</th>
+                    <th>Time Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Report 1</td><td>2023-10-01</td><td>10:00 AM</td></tr>
+                <tr><td>Report 2</td><td>2023-10-05</td><td>2:30 PM</td></tr>
+                <tr><td>Report 3</td><td>2023-10-10</td><td>11:15 AM</td></tr>
+                <tr><td>Report 4</td><td>2023-10-15</td><td>09:45 AM</td></tr>
+                <tr><td>Report 5</td><td>2023-10-20</td><td>1:00 PM</td></tr>
+                <tr><td>Report 6</td><td>2023-10-25</td><td>3:45 PM</td></tr>
+                <tr><td>Report 7</td><td>2023-11-01</td><td>8:30 AM</td></tr>
+                <tr><td>Report 8</td><td>2023-11-05</td><td>4:15 PM</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <a href="#" class="return">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Back</span>
+    </a>
+</div>
+</body>
+</html>

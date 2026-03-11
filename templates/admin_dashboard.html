@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #A3D1C6;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            color: #333;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #497D74;
+            padding: 10px 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .logo span {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px;
+        }
+        nav a {
+            color: #fff;
+            font-size: 16px;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+        nav a:hover {
+            background-color: #00C49a;
+            color: #fff;
+        }
+        .content {
+            width: 75%;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .container1,
+        .table-container,
+        .chart-container {
+            width: 100%;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .progress-container {
+            margin: 20px 0;
+            text-align: left;
+        }
+        .progress-label {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 20px;
+            text-align: right;
+            padding-right: 10px;
+            line-height: 20px;
+            font-size: 14px;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+        .blue {
+            background-color: #007bff;
+        }
+        .green {
+            background-color: #28a745;
+        }
+        .orange {
+            background-color: #ff9800;
+        }
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .report-table th,
+        .report-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .report-table th {
+            background: #007bff;
+            color: white;
+        }
+        .report-table tbody tr:hover {
+            background: #f1f1f1;
+        }
+        .button-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 10px 15px;
+            font-size: 14px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            text-decoration: none;
+        }
+        .add-task {
+            background-color: #007bff;
+            color: white;
+        }
+        .submit-report {
+            background-color: #28a745;
+            color: white;
+        }
+        .attendance {
+            background-color: #ffc107;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            color: #666;
+        }
+        .chart-placeholder {
+            width: 80%;
+            height: 80%;
+            background-color: #eee;
+            border-radius: 8px;
+        }
+        @media (max-width: 1024px) {
+            .content {
+                width: 90%;
+            }
+        }
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                width: 100%;
+                background: #497D74;
+                display: none;
+                padding: 10px 0;
+            }
+            nav ul.active {
+                display: flex;
+            }
+            .logo img {
+                width: 40px;
+                height: 40px;
+            }
+            .logo span {
+                font-size: 18px;
+            }
+            .content {
+                width: 100%;
+                padding: 10px;
+            }
+        }
+        @media (max-width: 480px) {
+            nav {
+                padding: 10px;
+            }
+            .logo span {
+                font-size: 16px;
+            }
+            nav a {
+                font-size: 14px;
+                padding: 6px 10px;
+            }
+            .btn {
+                font-size: 12px;
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='img/image.jfif') }}" alt="Logo">
+            <span>Admin Dashboard</span>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('logout') }}"><i class="fas fa-users"></i> Logout</a></li>
+        </ul>
+    </nav>
+    <div class="content">
+        <div class="button-section">
+            <a href="{{ url_for('admin_record') }}" class="btn add-task">Attendance Record</a>
+            <a href="{{ url_for('admin_add_task') }}" class="btn submit-report">Add Task</a>
+            <a href="{{ url_for('admin_list_report') }}" class="btn attendance">View Reports</a>
+            <a href="{{ url_for('all_reports') }}" class="btn add-task">All Reports Record</a>
+        </div>
+        <div class="container1">
+            <h2>Total Reports : {{total_reports[0]}}</h2>
+            <h2>Report Charts</h2>
+            <div class="progress-container">
+                <a href="{{ url_for('admin_list_report') }}?status=review" class="btn btn-sm btn-outline-primary">
+                <div class="progress-label">To Be Evaluated Reports</div>
+                <div class="progress-bar">
+                    <div class="progress-fill blue" style="width: {{ to_be_evaluated_percentage }}%">
+                        {{ to_be_evaluated_percentage|round(1) }}%
+                    </div>
+                </div>
+                </a>
+            </div>
+            <div class="progress-container">
+                <a href="{{ url_for('admin_list_report') }}?status=approved" class="btn btn-sm btn-outline-success">
+                <div class="progress-label">Approved Reports</div>
+                <div class="progress-bar">
+                    <div class="progress-fill green" style="width: {{ approved_percentage }}%">
+                        {{ approved_percentage|round(1) }}%
+                    </div>
+                </div>
+                </a>
+            </div>
+            <div class="progress-container">
+                <a href="{{ url_for('admin_list_report') }}?status=rejected" class="btn btn-sm btn-outline-danger">
+                <div class="progress-label">Rejected Reports</div>
+                <div class="progress-bar">
+                    <div class="progress-fill orange" style="width: {{ pending_percentage }}%">
+                        {{ pending_percentage|round(1) }}%
+                    </div>
+                </div>
+                </a>
+            </div>
+        </div>
+        <div class="table-container">
+            <h2>Employee Report Details</h2>
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Employee Name</th>
+                        <th>Number of Reports Submitted</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users_reports %}
+                        <tr>
+                            <td>{{ user[0] }}</td>
+                            <td>{{ user[1] }}</td>
+                            <td>{{ user[2] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

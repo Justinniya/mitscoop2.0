@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            color: #333;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #497D74;
+            padding: 10px 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .logo span {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px;
+        }
+        nav ul li {
+            text-align: center;
+        }
+        nav a {
+            color: #fff;
+            font-size: 16px;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+        nav a:hover {
+            background-color: #00C49a;
+            color: #fff;
+        }
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+        }
+        .container1 {
+            margin-top: 0;
+            padding: 40px;
+            background-color: #A3D1C6;
+            overflow-y: auto;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .dashboard-card {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .dashboard-card h3 {
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        form input[type="file"] {
+            width: 90%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        form button, form a {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        form button {
+            background-color: #007bff;
+            color: white;
+        }
+        form button:hover {
+            background-color: #0056b3;
+        }
+        form a {
+            background-color: #28a745;
+            color: white;
+        }
+        form a:hover {
+            background-color: #1e7e34;
+        }
+        .table-container {
+            max-height: 350px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+        thead {
+            background-color: #497D74;
+            color: white;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                width: 100%;
+                background: #497D74;
+                display: none;
+                padding: 10px 0;
+            }
+            nav ul.active {
+                display: flex;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .logo img {
+                width: 40px;
+                height: 40px;
+            }
+            .logo span {
+                font-size: 18px;
+            }
+            .container1 {
+                padding: 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            nav {
+                padding: 10px;
+            }
+            .logo span {
+                font-size: 16px;
+            }
+            nav a {
+                font-size: 14px;
+                padding: 6px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <div class="logo">
+        <img src="{{ url_for('static', filename='img/image.jfif') }}" alt="Logo">
+        <span>Attendance Dashboard</span>
+    </div>
+    <i class="fas fa-bars menu-toggle"></i>
+    <ul>
+        <li><a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-sign-out-alt"></i> Return</a></li>
+    </ul>
+</nav>
+<div class="container1">
+    <div class="dashboard-card">
+        <h3>Upload & View Attendance (CSV)</h3>
+        <form action="{{ url_for('upload_attendance') }}" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".csv" required>
+            <button type="submit">Upload Attendance</button>
+            <a href="{{ url_for('download_attendance') }}">Download Attendance</a>
+        </form>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in attendance %}
+                    <tr>
+                        <td>{{ record[0] }}</td>
+                        <td>{{ record[1] }}</td>
+                        <td>{{ record[2] }}</td>
+                        <td>{{ record[3] }}</td>
+                        <td>{{ record[4] }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5">No records available</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('nav ul');
+    menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+
+    function convertTo12Hour(time24) {
+        if (!time24) return '';
+        let [hour, minute] = time24.split(':').map(Number);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        hour = hour % 12 || 12;
+        return `${hour}:${minute.toString().padStart(2, '0')} ${ampm}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const rows = document.querySelectorAll('table tbody tr');
+        rows.forEach(row => {
+            const timeCell = row.cells[3]; 
+            if (timeCell && timeCell.textContent.includes(':')) {
+                const time24 = timeCell.textContent.trim().split(':').slice(0, 2).join(':');
+                timeCell.textContent = convertTo12Hour(time24);
+            }
+        });
+    });
+</script>
+</body>
+</html>

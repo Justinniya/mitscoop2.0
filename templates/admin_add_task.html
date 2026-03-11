@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #A3D1C6;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            color: #333;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #497D74;
+            padding: 10px 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .logo span {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px;
+        }
+        nav a {
+            color: #fff;
+            font-size: 16px;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+        nav a:hover {
+            background-color: #00C49a;
+            color: #fff;
+        }
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+        }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: #fff;
+            border-radius: 25px;
+            padding: 45px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"], 
+        input[type="date"],
+        input[type="time"], 
+        select,
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                width: 100%;
+                background: #497D74;
+                display: none;
+                padding: 10px 0;
+            }
+            nav ul.active {
+                display: flex;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .logo span {
+                font-size: 18px;
+            }
+            .container {
+                margin: 15px;
+                padding: 15px;
+            }
+        }
+        @media (max-width: 480px) {
+            nav {
+                padding: 10px;
+            }
+            .logo img {
+                width: 40px;
+                height: 40px;
+            }
+            .logo span {
+                font-size: 16px;
+            }
+            nav a {
+                font-size: 14px;
+                padding: 6px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <div class="logo">
+        <img src="{{ url_for('static', filename='img/image.jfif') }}" alt="Logo">
+        <span>Admin Dashboard</span>
+    </div>
+    <i class="fas fa-bars menu-toggle"></i>
+    <ul>
+        <li><a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-sign-out-alt"></i> Return</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <h2>Assign Task to All Employee</h2>
+    <form method="POST" action="{{ url_for('admin_add_task') }}" enctype="multipart/form-data">
+        <label for="task_description">Task Description:</label>
+        <input type="text" name="task_description" id="task_description" required>
+
+        <label for="due_date">Due Date:</label>
+        <input type="date" name="due_date" id="due_date" required>
+
+        <label for="due_time">Due Time:</label>
+        <input type="time" name="due_time" id="due_time" required>
+
+        <!-- Attachment at the bottom -->
+        <label for="task_attachment">Attach File (optional):</label>
+        <input type="file" name="task_attachment" id="task_attachment">
+
+        <button type="submit">Assign Task</button>
+    </form>
+</div>
+
+<script>
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('nav ul');
+    menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Reports Dashboard</title>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+/* GENERAL */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #A3D1C6;
+    margin: 0;
+}
+
+/* NAVBAR */
+nav {
+    background: #497D74;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 25px;
+    flex-wrap: wrap;
+}
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.logo img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.logo span {
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+}
+.return-btn {
+    background: #00C49a;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+}
+.return-btn:hover {
+    background: #00a882;
+    color: white;
+}
+
+/* MAIN CONTENT */
+.container-main {
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px 20px;
+}
+h2 {
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+/* REPORT GRID */
+.report-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+.report-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    transition: 0.25s;
+}
+.report-card:hover {
+    transform: translateY(-6px);
+}
+.report-title {
+    font-weight: 700;
+    font-size: 17px;
+    margin-bottom: 5px;
+}
+.report-user {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+.status {
+    display: inline-block;
+    background: #d4edda;
+    color: #155724;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+.view-btn {
+    background: #497D74;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.view-btn:hover {
+    background: #365e57;
+}
+
+/* MODAL */
+.modal-header {
+    background: #497D74;
+    color: white;
+}
+.image-frame {
+    background: #f3f3f3;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+.image-frame img {
+    width: 100%;
+    max-height: 350px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+.info-label {
+    font-size: 13px;
+    color: #777;
+    margin-top: 10px;
+}
+.modal-task {
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+.modal-message {
+    color: #444;
+}
+
+@media (max-width: 768px) {
+    nav {
+        justify-content: center;
+    }
+    .report-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <div class="logo">
+        <img src="{{ url_for('static', filename='img/image.jfif') }}" alt="Logo">
+        <span>Employee Reports Dashboard</span>
+    </div>
+    <a class="return-btn" href="{{ url_for('home') }}">
+        <i class="fas fa-arrow-left"></i> Return
+    </a>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="container-main">
+    <h2>Reports Submitted</h2>
+    {%if report%}
+    <div class="report-grid">
+        {% for reportt in report %}
+        <div class="report-card">
+            <div class="report-title">Report {{ loop.index }}: {{ reportt[1] }}</div>
+            <div class="report-user">by {{ reportt[2] }}</div>
+            {% if reportt[3] == 'approved' %}
+            <span class="status">Approved</span>
+            {% endif %}
+            <button
+                class="view-btn open-modal"
+                data-bs-toggle="modal"
+                data-bs-target="#reportModal"
+                data-image="{{ url_for('view', report_id=reportt[0]) }}"
+                data-task="{{ reportt[3] }}"
+                data-message="{{ reportt[1] }}">
+                <i class="fa fa-eye"></i> View Details
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="text-align: center; color: #555; font-size:
+16px;">No reports submitted yet.</p>
+    {% endif %}
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="reportModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fa fa-file-alt"></i> Report Details</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="image-frame">
+                    <img id="modalImage" src="">
+                </div>
+                <div class="info-label"><b>Task</b></div>
+                <div id="modalTask" class="modal-task"></div>
+                <div class="info-label"><strong></strong>Message</strong></div>
+                <div id="modalMessage" class="modal-message"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BOOTSTRAP JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Populate modal with data
+document.querySelectorAll(".open-modal").forEach(btn => {
+    btn.addEventListener("click", function() {
+        document.getElementById("modalImage").src = this.dataset.image;
+        document.getElementById("modalTask").textContent = this.dataset.task;
+        document.getElementById("modalMessage").textContent = this.dataset.message;
+    });
+});
+</script>
+
+</body>
+</html>
